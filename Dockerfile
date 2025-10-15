@@ -44,4 +44,4 @@ RUN chown -R www-data:www-data /app/data
 EXPOSE 8080
 
 # Start PHP built-in server with proper port and error reporting
-CMD ["sh", "-c", "php -S 0.0.0.0:${PORT:-8080} -t /app -d display_errors=1 -d log_errors=1"]
+CMD ["sh", "-c", "php -S 0.0.0.0:$PORT -t /app -d display_errors=1 -d log_errors=1"]
