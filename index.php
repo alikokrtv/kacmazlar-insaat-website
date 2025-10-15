@@ -23,6 +23,13 @@ if (isset($pathInfo['extension'])) {
     }
 }
 
+// Simple health check endpoint
+if ($requestUri === '/health') {
+    http_response_code(200);
+    echo json_encode(['status' => 'ok', 'timestamp' => date('Y-m-d H:i:s')]);
+    exit;
+}
+
 // Route requests
 switch ($requestUri) {
     case '/':

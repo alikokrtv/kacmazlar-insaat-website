@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y \
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
-RUN docker-php-ext-install pdo_mysql pdo_sqlite mbstring exif pcntl bcmath gd
+RUN docker-php-ext-install pdo_sqlite mbstring exif pcntl bcmath gd
 
 # Get latest Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -25,7 +25,7 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Set working directory
 WORKDIR /app
 
-# Copy composer files
+# Copy composer files first for better caching
 COPY composer.json composer.lock* ./
 
 # Install dependencies
@@ -40,8 +40,8 @@ RUN mkdir -p /app/data && chmod 755 /app/data
 # Set permissions
 RUN chown -R www-data:www-data /app/data
 
-# Expose port
+# Expose port (Railway uses $PORT environment variable)
 EXPOSE 8080
 
-# Start PHP built-in server
-CMD ["php", "-S", "0.0.0.0:8080", "-t", "/app"]
+# Start PHP built-in server with proper port
+CMD ["sh", "-c", "php -S 0.0.0.0:${PORT:-8080} -t /app"]
