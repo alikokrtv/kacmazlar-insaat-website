@@ -1,0 +1,24 @@
+{
+  "name": "kacmazlar-insaat-website",
+  "version": "1.0.0",
+  "description": "Kacmazlar İnşaat - Profesyonel Web Sitesi",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve -s . -p $PORT",
+    "dev": "npx serve -s . -p 3000"
+  },
+  "dependencies": {
+    "serve": "^14.2.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "construction",
+    "steel-structure",
+    "scaffolding",
+    "website"
+  ],
+  "author": "Kacmazlar İnşaat",
+  "license": "MIT"
+}
