@@ -315,7 +315,7 @@
                 <div class="loading-indicator">
                     <i class="fas fa-spinner fa-spin"></i>
                     <h3>Katalog yükleniyor...</h3>
-                    <p>Lütfen bekleyin (143 MB dosya)</p>
+                    <p>Lütfen bekleyin (3 MB dosya)</p>
                     <div class="progress-bar">
                         <div class="progress-fill" id="pdf-progress"></div>
                     </div>
@@ -328,9 +328,9 @@
         <div class="download-section">
             <h3><i class="fas fa-download"></i> Kataloğu İndirin</h3>
             <p>PDF kataloğumuzu bilgisayarınıza indirerek offline olarak inceleyebilirsiniz.</p>
-            <a href="./images/katalog.pdf" download="Kacmazlar-Insaat-Katalog.pdf" class="download-btn">
+            <a href="./katalognew.pdf" download="Kacmazlar-Insaat-Katalog.pdf" class="download-btn">
                 <i class="fas fa-file-pdf"></i>
-                PDF İndir (143 MB)
+                PDF İndir (3 MB)
             </a>
         </div>
     </section>
@@ -399,7 +399,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script>
         // PDF.js initialization
-        const url = './images/katalog.pdf';
+        const url = './katalognew.pdf';
         
         // Debug: Test if file exists
         fetch(url, { method: 'HEAD' })
@@ -439,7 +439,7 @@
                     <i class="fas fa-exclamation-triangle" style="color: #e74c3c; font-size: 48px; margin-bottom: 20px;"></i>
                     <h3>PDF.js Kütüphanesi Yüklenemedi</h3>
                     <p>PDF görüntüleme kütüphanesi yüklenirken bir hata oluştu.</p>
-                    <p><a href="./images/katalog.pdf" download="Kacmazlar-Insaat-Katalog.pdf" class="download-btn" style="display: inline-flex; margin-top: 20px;">
+                    <p><a href="./katalognew.pdf" download="Kacmazlar-Insaat-Katalog.pdf" class="download-btn" style="display: inline-flex; margin-top: 20px;">
                         <i class="fas fa-download"></i> PDF İndir
                     </a></p>
                 </div>
@@ -696,7 +696,7 @@
                         <p style="font-size: 14px; color: #666; margin-top: 10px;">${errorDetails}</p>
                         <p style="font-size: 12px; color: #999; margin-top: 10px;">Hata detayı: ${error.message || altError.message}</p>
                         <div style="margin-top: 20px;">
-                            <a href="./images/katalog.pdf" download="Kacmazlar-Insaat-Katalog.pdf" class="download-btn" style="display: inline-flex; margin-right: 10px;">
+                            <a href="./katalognew.pdf" download="Kacmazlar-Insaat-Katalog.pdf" class="download-btn" style="display: inline-flex; margin-right: 10px;">
                                 <i class="fas fa-download"></i> PDF İndir
                             </a>
                             <button onclick="location.reload()" class="download-btn" style="display: inline-flex; background: #27ae60; margin-right: 10px;">
@@ -715,13 +715,13 @@
         function showIframeFallback() {
             wrapper.innerHTML = `
                 <div style="width: 100%; height: 600px; border: 1px solid #ddd; border-radius: 8px;">
-                    <iframe src="./images/katalog.pdf" 
+                    <iframe src="./katalognew.pdf" 
                             width="100%" 
                             height="100%" 
                             style="border: none; border-radius: 8px;"
                             title="PDF Katalog">
                         <p>Tarayıcınız PDF görüntülemeyi desteklemiyor. 
-                        <a href="./images/katalog.pdf" download="Kacmazlar-Insaat-Katalog.pdf">PDF'yi indirmek için tıklayın</a></p>
+                        <a href="./katalognew.pdf" download="Kacmazlar-Insaat-Katalog.pdf">PDF'yi indirmek için tıklayın</a></p>
                     </iframe>
                 </div>
                 <div style="margin-top: 15px; text-align: center;">
