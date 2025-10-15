@@ -1,104 +1,85 @@
 <?php
 /**
- * Kacmazlar İnşaat CMS - Veritabanı Bağlantı Sınıfı
+ * Database Connection Class
+ * Railway SQLite Configuration
  */
 
 class Database {
-    private $host;
-    private $dbname;
-    private $username;
-    private $password;
-    private $charset;
+    private static $instance = null;
     private $pdo;
     
-    public function __construct() {
-        // Railway environment variables
-        $this->host = $_ENV['DB_HOST'] ?? $_SERVER['DB_HOST'] ?? 'localhost';
-        $this->dbname = $_ENV['DB_NAME'] ?? $_SERVER['DB_NAME'] ?? 'kacmazlar_cms';
-        $this->username = $_ENV['DB_USER'] ?? $_SERVER['DB_USER'] ?? 'root';
-        $this->password = $_ENV['DB_PASSWORD'] ?? $_SERVER['DB_PASSWORD'] ?? '';
-        $this->charset = 'utf8mb4';
-        
-        $this->connect();
+    private function __construct() {
+        try {
+            // Railway SQLite path
+            $dbPath = $_ENV['RAILWAY_VOLUME_MOUNT_PATH'] ?? '/app/data';
+            $dbFile = $dbPath . '/kacmazlar.db';
+            
+            // Ensure directory exists
+            if (!is_dir($dbPath)) {
+                mkdir($dbPath, 0755, true);
+            }
+            
+            $this->pdo = new PDO("sqlite:$dbFile");
+            $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $this->pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+            
+            // Enable foreign keys
+            $this->pdo->exec("PRAGMA foreign_keys = ON");
+            
+        } catch (PDOException $e) {
+            error_log("Database connection failed: " . $e->getMessage());
+            throw new Exception("Database connection failed");
+        }
     }
     
-    private function connect() {
-        try {
-            $dsn = "mysql:host={$this->host};dbname={$this->dbname};charset={$this->charset}";
-            $options = [
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                PDO::ATTR_EMULATE_PREPARES => false,
-            ];
-            
-            $this->pdo = new PDO($dsn, $this->username, $this->password, $options);
-        } catch (PDOException $e) {
-            throw new PDOException($e->getMessage(), (int)$e->getCode());
+    public static function getInstance() {
+        if (self::$instance === null) {
+            self::$instance = new self();
         }
+        return self::$instance;
     }
     
     public function getConnection() {
         return $this->pdo;
     }
     
-    // Genel sorgu çalıştırma
     public function query($sql, $params = []) {
         try {
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute($params);
             return $stmt;
         } catch (PDOException $e) {
-            throw new PDOException($e->getMessage(), (int)$e->getCode());
+            error_log("Query failed: " . $e->getMessage());
+            throw new Exception("Database query failed");
         }
     }
     
-    // Tek satır getirme
     public function fetch($sql, $params = []) {
-        $stmt = $this->query($sql, $params);
-        return $stmt->fetch();
+        return $this->query($sql, $params)->fetch();
     }
     
-    // Tüm satırları getirme
     public function fetchAll($sql, $params = []) {
-        $stmt = $this->query($sql, $params);
-        return $stmt->fetchAll();
+        return $this->query($sql, $params)->fetchAll();
     }
     
-    // Son eklenen ID'yi getirme
     public function lastInsertId() {
         return $this->pdo->lastInsertId();
     }
     
-    // Satır sayısını getirme
     public function rowCount($sql, $params = []) {
         $stmt = $this->query($sql, $params);
         return $stmt->rowCount();
     }
     
-    // Transaction başlatma
     public function beginTransaction() {
         return $this->pdo->beginTransaction();
     }
     
-    // Transaction commit
     public function commit() {
         return $this->pdo->commit();
     }
     
-    // Transaction rollback
     public function rollback() {
         return $this->pdo->rollback();
-    }
-}
-
-// Singleton pattern için
-class DatabaseSingleton {
-    private static $instance = null;
-    
-    public static function getInstance() {
-        if (self::$instance === null) {
-            self::$instance = new Database();
-        }
-        return self::$instance;
     }
 }

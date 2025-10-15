@@ -1,44 +1,34 @@
 <?php
 /**
- * Railway Database Setup Script
+ * Railway SQLite Database Setup Script
  * Bu script Railway'de ilk deployment'ta çalıştırılmalı
  */
 
-// Railway environment variables kontrolü
-if (!isset($_ENV['DB_HOST'])) {
-    die('Railway environment variables not set. Please configure database connection.');
-}
-
-echo "Railway Database Setup Starting...\n";
+echo "Railway SQLite Database Setup Starting...\n";
 
 try {
-    // Database connection
-    $host = $_ENV['DB_HOST'];
-    $dbname = $_ENV['DB_NAME'];
-    $username = $_ENV['DB_USER'];
-    $password = $_ENV['DB_PASSWORD'];
+    // SQLite database path
+    $dbPath = $_ENV['RAILWAY_VOLUME_MOUNT_PATH'] ?? '/app/data';
+    $dbFile = $dbPath . '/kacmazlar.db';
     
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    
-    echo "Database connection successful!\n";
-    
-    // Check if tables exist
-    $tables = ['admins', 'projects', 'blog_posts', 'blog_categories', 'contact_messages', 'site_settings'];
-    $existingTables = [];
-    
-    foreach ($tables as $table) {
-        $stmt = $pdo->query("SHOW TABLES LIKE '$table'");
-        if ($stmt->rowCount() > 0) {
-            $existingTables[] = $table;
-        }
+    // Ensure directory exists
+    if (!is_dir($dbPath)) {
+        mkdir($dbPath, 0755, true);
+        echo "Created directory: $dbPath\n";
     }
     
-    if (count($existingTables) > 0) {
-        echo "Database tables already exist: " . implode(', ', $existingTables) . "\n";
+    // Check if database already exists
+    if (file_exists($dbFile)) {
+        echo "Database already exists: $dbFile\n";
         echo "Setup completed!\n";
         exit;
     }
+    
+    // Create database connection
+    $pdo = new PDO("sqlite:$dbFile");
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    
+    echo "SQLite database created: $dbFile\n";
     
     // Read and execute SQL file
     $sqlFile = __DIR__ . '/database.sql';
