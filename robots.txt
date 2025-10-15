@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://www.kacmazlarinsaat.com/sitemap.xml
+
+# Disallow specific directories
+Disallow: /css/
+Disallow: /js/
+

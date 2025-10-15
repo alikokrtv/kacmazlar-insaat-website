@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Kacmazlar İnşaat Ürün Kataloğu - Çelik konstrüksiyon ve iskele sistemleri">
+    <title>Kacmazlar İnşaat - Ürün Kataloğu</title>
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .catalog-container {
+            position: fixed;
+            top: 70px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #525659;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .catalog-header {
+            display: none;
+        }
+
+        .pdf-viewer {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .pdf-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: #2c3e50;
+            flex-wrap: wrap;
+            gap: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            flex-shrink: 0;
+        }
+
+        .pdf-nav {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .pdf-nav button {
+            padding: 10px 20px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+        }
+
+        .pdf-nav button:hover:not(:disabled) {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .pdf-nav button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .page-info {
+            font-weight: 600;
+            color: white;
+        }
+
+        .zoom-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .zoom-controls button {
+            padding: 8px 15px;
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .zoom-controls button:hover {
+            background: var(--primary-color);
+        }
+
+        .zoom-level {
+            font-weight: 600;
+            min-width: 60px;
+            text-align: center;
+            color: white;
+        }
+
+        .pdf-canvas-container {
+            flex: 1;
+            overflow: auto;
+            background: #525659;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px;
+        }
+
+        .download-btn {
+            padding: 10px 25px;
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .download-btn:hover {
+            background: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        #pdf-canvas {
+            max-width: 100%;
+            height: auto;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            background: white;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: white;
+        }
+
+        .fullscreen-btn {
+            padding: 10px 15px;
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+        }
+
+        .fullscreen-btn:hover {
+            background: var(--primary-color);
+        }
+
+        .back-link {
+            position: fixed;
+            top: 85px;
+            left: 20px;
+            z-index: 100;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--primary-color);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: 600;
+            transition: var(--transition);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        .back-link:hover {
+            background: var(--secondary-color);
+            transform: translateX(-5px);
+        }
+
+        @media (max-width: 768px) {
+            .catalog-container {
+                top: 70px;
+            }
+
+            .back-link {
+                top: 75px;
+                left: 10px;
+                padding: 8px 15px;
+                font-size: 14px;
+            }
+
+            .pdf-controls {
+                padding: 10px;
+                gap: 10px;
+            }
+
+            .pdf-nav {
+                flex: 1 1 100%;
+                justify-content: center;
+            }
+
+            .zoom-controls {
+                flex: 1 1 auto;
+            }
+
+            .download-btn {
+                padding: 8px 15px;
+                font-size: 14px;
+            }
+
+            .pdf-canvas-container {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header id="header" class="scrolled">
+        <nav class="navbar">
+            <div class="container">
+                <div class="logo">
+                    <a href="index.html">
+                        <img src="images/logo.svg" alt="Kacmazlar İnşaat Logo" class="logo-image">
+                    </a>
+                </div>
+                <button class="mobile-menu-toggle" aria-label="Menu">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <ul class="nav-menu">
+                    <li><a href="index.html#home">Ana Sayfa</a></li>
+                    <li><a href="index.html#hakkimizda">Hakkımızda</a></li>
+                    <li><a href="index.html#hizmetler">Hizmetler</a></li>
+                    <li><a href="index.html#projeler">Projeler</a></li>
+                    <li><a href="katalog.html" class="active">Katalog</a></li>
+                    <li><a href="index.html#iletisim">İletişim</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <a href="index.html" class="back-link">
+        <i class="fas fa-arrow-left"></i>
+        Ana Sayfa
+    </a>
+
+    <!-- Catalog Section -->
+    <section class="catalog-container">
+        <div class="pdf-viewer">
+            <div class="pdf-controls">
+                <div class="pdf-nav">
+                    <button id="prev-page" onclick="prevPage()">
+                        <i class="fas fa-chevron-left"></i> Önceki
+                    </button>
+                    <span class="page-info">
+                        Sayfa <span id="page-num">1</span> / <span id="page-count">-</span>
+                    </span>
+                    <button id="next-page" onclick="nextPage()">
+                        Sonraki <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+
+                <div class="zoom-controls">
+                    <button onclick="zoomOut()"><i class="fas fa-search-minus"></i></button>
+                    <span class="zoom-level"><span id="zoom-level">150</span>%</span>
+                    <button onclick="zoomIn()"><i class="fas fa-search-plus"></i></button>
+                    <button onclick="fitToWidth()" class="fullscreen-btn">
+                        <i class="fas fa-expand-arrows-alt"></i> Sayfaya Sığdır
+                    </button>
+                </div>
+
+                <a href="images/katalog.pdf" download class="download-btn">
+                    <i class="fas fa-download"></i>
+                    PDF İndir
+                </a>
+            </div>
+
+            <div id="pdf-loading" class="loading">
+                <i class="fas fa-spinner fa-spin fa-3x" style="color: var(--primary-color);"></i>
+                <p>Katalog yükleniyor...</p>
+            </div>
+
+            <div class="pdf-canvas-container">
+                <canvas id="pdf-canvas"></canvas>
+            </div>
+        </div>
+    </section>
+
+    <!-- PDF.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+        // PDF.js configuration
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+        let pdfDoc = null;
+        let pageNum = 1;
+        let pageRendering = false;
+        let pageNumPending = null;
+        let scale = 1.5;
+        let currentPage = null;
+        const canvas = document.getElementById('pdf-canvas');
+        const ctx = canvas.getContext('2d');
+        const loadingDiv = document.getElementById('pdf-loading');
+        const container = document.querySelector('.pdf-canvas-container');
+
+        // Load PDF
+        const url = 'images/katalog.pdf';
+
+        pdfjsLib.getDocument(url).promise.then(function(pdf) {
+            pdfDoc = pdf;
+            document.getElementById('page-count').textContent = pdf.numPages;
+            loadingDiv.style.display = 'none';
+            renderPage(pageNum);
+        }).catch(function(error) {
+            loadingDiv.innerHTML = '<p style="color: var(--primary-color);">Katalog yüklenirken bir hata oluştu. Lütfen sayfayı yenileyin.</p>';
+            console.error('PDF yükleme hatası:', error);
+        });
+
+        function renderPage(num) {
+            pageRendering = true;
+            
+            pdfDoc.getPage(num).then(function(page) {
+                currentPage = page;
+                const viewport = page.getViewport({scale: scale});
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+
+                const renderContext = {
+                    canvasContext: ctx,
+                    viewport: viewport
+                };
+
+                const renderTask = page.render(renderContext);
+
+                renderTask.promise.then(function() {
+                    pageRendering = false;
+                    if (pageNumPending !== null) {
+                        renderPage(pageNumPending);
+                        pageNumPending = null;
+                    }
+                });
+            });
+
+            document.getElementById('page-num').textContent = num;
+            updateButtons();
+        }
+
+        function fitToWidth() {
+            if (!currentPage || !container) return;
+            
+            const containerWidth = container.clientWidth - 40; // padding
+            const pageViewport = currentPage.getViewport({scale: 1.0});
+            scale = containerWidth / pageViewport.width;
+            
+            document.getElementById('zoom-level').textContent = Math.round(scale * 100);
+            queueRenderPage(pageNum);
+        }
+
+        function queueRenderPage(num) {
+            if (pageRendering) {
+                pageNumPending = num;
+            } else {
+                renderPage(num);
+            }
+        }
+
+        function prevPage() {
+            if (pageNum <= 1) {
+                return;
+            }
+            pageNum--;
+            queueRenderPage(pageNum);
+        }
+
+        function nextPage() {
+            if (pageNum >= pdfDoc.numPages) {
+                return;
+            }
+            pageNum++;
+            queueRenderPage(pageNum);
+        }
+
+        function zoomIn() {
+            scale += 0.25;
+            if (scale > 3) scale = 3;
+            document.getElementById('zoom-level').textContent = Math.round(scale * 100);
+            queueRenderPage(pageNum);
+        }
+
+        function zoomOut() {
+            scale -= 0.25;
+            if (scale < 0.5) scale = 0.5;
+            document.getElementById('zoom-level').textContent = Math.round(scale * 100);
+            queueRenderPage(pageNum);
+        }
+
+        function updateButtons() {
+            document.getElementById('prev-page').disabled = (pageNum <= 1);
+            document.getElementById('next-page').disabled = (pageNum >= pdfDoc.numPages);
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') {
+                prevPage();
+            } else if (e.key === 'ArrowRight') {
+                nextPage();
+            } else if (e.key === '+' || e.key === '=') {
+                zoomIn();
+            } else if (e.key === '-') {
+                zoomOut();
+            }
+        });
+
+        // Mobile menu toggle
+        const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+        const navMenu = document.querySelector('.nav-menu');
+
+        if (mobileMenuToggle) {
+            mobileMenuToggle.addEventListener('click', () => {
+                navMenu.classList.toggle('active');
+                const icon = mobileMenuToggle.querySelector('i');
+                if (navMenu.classList.contains('active')) {
+                    icon.classList.remove('fa-bars');
+                    icon.classList.add('fa-times');
+                } else {
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                }
+            });
+        }
+
+        // Auto fit on load and resize
+        window.addEventListener('resize', () => {
+            if (currentPage) {
+                fitToWidth();
+            }
+        });
+
+        // Initial fit when PDF loads
+        pdfjsLib.getDocument(url).promise.then(function(pdf) {
+            pdfDoc = pdf;
+            document.getElementById('page-count').textContent = pdf.numPages;
+            loadingDiv.style.display = 'none';
+            renderPage(pageNum);
+            // Fit after first render
+            setTimeout(() => {
+                if (window.innerWidth > 768) {
+                    fitToWidth();
+                }
+            }, 100);
+        });
+    </script>
+</body>
+</html>
+

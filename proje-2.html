@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Kacmazlar İnşaat - Çelik Bina Konstrüksiyonu Proje Detayları">
+    <meta name="keywords" content="çelik konstrüksiyon, çelik bina, taşıyıcı sistem, Kacmazlar İnşaat">
+    <meta name="author" content="Kacmazlar İnşaat">
+    <title>Kacmazlar İnşaat - Çelik Bina Konstrüksiyonu Proje Detayları</title>
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    <link rel="apple-touch-icon" href="images/favicon.png">
+    <link rel="canonical" href="https://www.kacmazlarinsaat.com/proje-2.html">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Kacmazlar İnşaat - Çelik Bina Konstrüksiyonu">
+    <meta property="og:description" content="Çelik taşıyıcı sistem ve çatı montajı projesi detayları">
+    <meta property="og:image" content="https://www.kacmazlarinsaat.com/images/project2.jpg">
+    <meta property="og:url" content="https://www.kacmazlarinsaat.com/proje-2.html">
+    <meta property="og:type" content="website">
+    
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* Project Detail Specific Styles */
+        .project-hero {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--white);
+            padding: 120px 0 80px;
+            text-align: center;
+        }
+
+        .project-hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .project-hero .breadcrumb {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+            font-size: 16px;
+        }
+
+        .project-hero .breadcrumb a {
+            color: var(--white);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .project-hero .breadcrumb a:hover {
+            opacity: 0.8;
+        }
+
+        .project-hero .breadcrumb i {
+            font-size: 12px;
+        }
+
+        .project-detail {
+            padding: 80px 0;
+        }
+
+        .project-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 60px;
+            margin-bottom: 60px;
+        }
+
+        .project-gallery {
+            position: relative;
+        }
+
+        .main-image {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 10px;
+            box-shadow: var(--shadow-lg);
+            margin-bottom: 20px;
+        }
+
+        .thumbnail-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .thumbnail {
+            width: 100%;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid transparent;
+        }
+
+        .thumbnail:hover,
+        .thumbnail.active {
+            border-color: var(--primary-color);
+            transform: scale(1.05);
+        }
+
+        .project-info {
+            background: var(--light-color);
+            padding: 40px;
+            border-radius: 10px;
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+
+        .project-info h3 {
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        .info-value {
+            color: var(--gray);
+            text-align: right;
+        }
+
+        .project-description {
+            margin-bottom: 40px;
+        }
+
+        .project-description h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 28px;
+        }
+
+        .project-description p {
+            line-height: 1.8;
+            margin-bottom: 20px;
+            color: var(--gray);
+        }
+
+        .project-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .feature-card {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .feature-card i {
+            font-size: 48px;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        .feature-card h4 {
+            color: var(--dark-color);
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .feature-card p {
+            color: var(--gray);
+            line-height: 1.6;
+        }
+
+        .project-navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 60px;
+            padding: 30px;
+            background: var(--light-color);
+            border-radius: 10px;
+        }
+
+        .nav-button {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px 25px;
+            background: var(--primary-color);
+            color: var(--white);
+            text-decoration: none;
+            border-radius: 5px;
+            transition: var(--transition);
+            font-weight: 600;
+        }
+
+        .nav-button:hover {
+            background: var(--secondary-color);
+            transform: translateX(-5px);
+        }
+
+        .nav-button.next:hover {
+            transform: translateX(5px);
+        }
+
+        .nav-button i {
+            font-size: 16px;
+        }
+
+        .back-to-projects {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .back-to-projects .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px 30px;
+            background: var(--secondary-color);
+            color: var(--white);
+            text-decoration: none;
+            border-radius: 5px;
+            transition: var(--transition);
+            font-weight: 600;
+        }
+
+        .back-to-projects .btn:hover {
+            background: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .project-hero h1 {
+                font-size: 32px;
+            }
+
+            .project-content {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .project-info {
+                position: static;
+            }
+
+            .thumbnail-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .project-features {
+                grid-template-columns: 1fr;
+            }
+
+            .project-navigation {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .nav-button {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .project-hero {
+                padding: 100px 0 60px;
+            }
+
+            .project-detail {
+                padding: 60px 0;
+            }
+
+            .project-info {
+                padding: 30px 20px;
+            }
+
+            .thumbnail-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header id="header" class="scrolled">
+        <nav class="navbar">
+            <div class="container">
+                <div class="nav-brand">
+                    <a href="index.html" class="logo">
+                        <img src="images/logo.svg" alt="Kacmazlar İnşaat Logo" class="logo-image">
+                    </a>
+                </div>
+                <div class="nav-menu" id="navMenu">
+                    <ul class="nav-list">
+                        <li><a href="index.html">Ana Sayfa</a></li>
+                        <li><a href="index.html#hakkimizda">Hakkımızda</a></li>
+                        <li><a href="index.html#hizmetler">Hizmetler</a></li>
+                        <li><a href="index.html#projeler">Projeler</a></li>
+                        <li><a href="index.html#iletisim">İletişim</a></li>
+                        <li><a href="katalog.html">Katalog</a></li>
+                    </ul>
+                </div>
+                <div class="mobile-menu-toggle" id="mobileMenuToggle">
+                    <i class="fas fa-bars"></i>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Project Hero Section -->
+    <section class="project-hero">
+        <div class="container">
+            <h1>Çelik Bina Konstrüksiyonu</h1>
+            <p>Çelik taşıyıcı sistem ve çatı montajı</p>
+            <div class="breadcrumb">
+                <a href="index.html">Ana Sayfa</a>
+                <i class="fas fa-chevron-right"></i>
+                <a href="index.html#projeler">Projeler</a>
+                <i class="fas fa-chevron-right"></i>
+                <span>Çelik Bina Konstrüksiyonu</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Project Detail Section -->
+    <section class="project-detail">
+        <div class="container">
+            <div class="project-content">
+                <div class="project-gallery">
+                    <img src="images/project2.jpg" alt="Çelik Bina Konstrüksiyonu" class="main-image" id="mainImage">
+                    <div class="thumbnail-grid">
+                        <img src="images/project2.jpg" alt="Çelik Bina Konstrüksiyonu - Ana Görsel" class="thumbnail active" onclick="changeImage(this)">
+                        <img src="images/project3.jpg" alt="Çelik Bina Konstrüksiyonu - Detay 1" class="thumbnail" onclick="changeImage(this)">
+                        <img src="images/project4.jpg" alt="Çelik Bina Konstrüksiyonu - Detay 2" class="thumbnail" onclick="changeImage(this)">
+                        <img src="images/project5.jpg" alt="Çelik Bina Konstrüksiyonu - Detay 3" class="thumbnail" onclick="changeImage(this)">
+                    </div>
+                </div>
+
+                <div class="project-info">
+                    <h3>Proje Bilgileri</h3>
+                    <div class="info-item">
+                        <span class="info-label">Proje Türü</span>
+                        <span class="info-value">Çelik Konstrüksiyon</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Lokasyon</span>
+                        <span class="info-value">Ankara</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Başlangıç</span>
+                        <span class="info-value">Ocak 2024</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Tamamlanma</span>
+                        <span class="info-value">Mayıs 2024</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Alan</span>
+                        <span class="info-value">3.200 m²</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Durum</span>
+                        <span class="info-value">Tamamlandı</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Müşteri</span>
+                        <span class="info-value">Endüstriyel Müşteri</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-description">
+                <h2>Proje Hakkında</h2>
+                <p>Bu projede, Ankara'da bulunan endüstriyel bir tesisin çelik konstrüksiyon yapısını tasarladık ve montajını gerçekleştirdik. Proje, 3.200 m² alanda çelik taşıyıcı sistem ve çatı montajını içermektedir.</p>
+                <p>Çelik konstrüksiyon tasarımında modern mühendislik prensipleri uygulandı ve yüksek dayanıklılık sağlayan malzemeler kullanıldı. Sistem, deprem yönetmeliğine uygun olarak tasarlandı ve montajı 5 ay içinde tamamlandı.</p>
+                <p>Proje süresince sürekli kalite kontrolü yapıldı ve müşteri memnuniyeti ön planda tutuldu. Montaj sonrası detaylı testler yapılarak sistemin güvenliği doğrulandı.</p>
+            </div>
+
+            <div class="project-features">
+                <div class="feature-card">
+                    <i class="fas fa-cogs"></i>
+                    <h4>Teknoloji</h4>
+                    <p>Yüksek dayanımlı çelik profiller, galvanizli bağlantı elemanları ve modern montaj teknikleri kullanıldı.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-shield-alt"></i>
+                    <h4>Güvenlik</h4>
+                    <p>İSG standartlarına uygun çalışma ve CE belgeli malzemeler kullanıldı.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-clock"></i>
+                    <h4>Zamanlama</h4>
+                    <p>Proje planlanan sürede tamamlandı ve müşteri memnuniyeti sağlandı.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-award"></i>
+                    <h4>Kalite</h4>
+                    <p>Yüksek kalite standartlarında çalışma ve detaylı kalite kontrolü.</p>
+                </div>
+            </div>
+
+            <div class="project-navigation">
+                <a href="proje-1.html" class="nav-button prev">
+                    <i class="fas fa-chevron-left"></i>
+                    Önceki Proje
+                </a>
+                <a href="index.html#projeler" class="nav-button">
+                    <i class="fas fa-th"></i>
+                    Tüm Projeler
+                </a>
+                <a href="proje-3.html" class="nav-button next">
+                    Sonraki Proje
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+            </div>
+
+            <div class="back-to-projects">
+                <a href="index.html#projeler" class="btn">
+                    <i class="fas fa-arrow-left"></i>
+                    Projeler Sayfasına Dön
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>Kacmazlar İnşaat</h3>
+                    <p>Çelik konstrüksiyon, iskele ve kalıp sistemlerinde 25 yılı aşkın deneyimimizle güvenli ve kaliteli çözümler sunuyoruz.</p>
+                    <div class="contact-details">
+                        <p><i class="fas fa-phone"></i> <a href="tel:+905432392550">+90 543 239 25 50</a></p>
+                        <p><i class="fas fa-envelope"></i> <a href="mailto:info@kacmazlarinsaat.com">info@kacmazlarinsaat.com</a></p>
+                        <p><i class="fas fa-globe"></i> <a href="https://kacmazlarinsaat.com" target="_blank">kacmazlarinsaat.com</a></p>
+                    </div>
+                    <div class="social-links">
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Hizmetlerimiz</h3>
+                    <ul>
+                        <li><a href="index.html#hizmetler">İskele Sistemleri</a></li>
+                        <li><a href="index.html#hizmetler">Çelik Konstrüksiyon</a></li>
+                        <li><a href="index.html#hizmetler">Endüstriyel Yapılar</a></li>
+                        <li><a href="index.html#hizmetler">Kalıp Sistemleri</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>İletişim</h3>
+                    <ul>
+                        <li><i class="fas fa-map-marker-alt"></i> İstanbul, Türkiye</li>
+                        <li><i class="fas fa-phone"></i> <a href="tel:+905432392550">+90 543 239 25 50</a></li>
+                        <li><i class="fas fa-envelope"></i> <a href="mailto:info@kacmazlarinsaat.com">info@kacmazlarinsaat.com</a></li>
+                        <li><i class="fas fa-globe"></i> <a href="https://kacmazlarinsaat.com" target="_blank">kacmazlarinsaat.com</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Kacmazlar İnşaat. Tüm hakları saklıdır. | <a href="tel:+905432392550">+90 543 239 25 50</a> | <a href="mailto:info@kacmazlarinsaat.com">info@kacmazlarinsaat.com</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scroll to Top Button -->
+    <button id="scrollTopBtn" class="scroll-top" aria-label="Yukarı Çık">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script src="js/main.js"></script>
+    <script>
+        // Image Gallery Functionality
+        function changeImage(thumbnail) {
+            const mainImage = document.getElementById('mainImage');
+            const thumbnails = document.querySelectorAll('.thumbnail');
+            
+            // Remove active class from all thumbnails
+            thumbnails.forEach(thumb => thumb.classList.remove('active'));
+            
+            // Add active class to clicked thumbnail
+            thumbnail.classList.add('active');
+            
+            // Change main image
+            mainImage.src = thumbnail.src;
+            mainImage.alt = thumbnail.alt;
+        }
+
+        // Mobile menu toggle
+        const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+        const navMenu = document.querySelector('.nav-menu');
+
+        if (mobileMenuToggle) {
+            mobileMenuToggle.addEventListener('click', () => {
+                navMenu.classList.toggle('active');
+                const icon = mobileMenuToggle.querySelector('i');
+                if (navMenu.classList.contains('active')) {
+                    icon.classList.remove('fa-bars');
+                    icon.classList.add('fa-times');
+                } else {
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                }
+            });
+        }
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

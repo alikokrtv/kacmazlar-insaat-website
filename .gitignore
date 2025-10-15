@@ -1,0 +1,29 @@
+# Dependencies
+/vendor/
+/node_modules/
+
+# Composer
+composer.phar
+composer.lock
+
+# Configuration files (contains sensitive info)
+config.php
+
+# System files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+error_log
+
+# Temp files
+/tmp/
+*.tmp
+
