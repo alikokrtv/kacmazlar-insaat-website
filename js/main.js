@@ -29,7 +29,9 @@ mobileMenuToggle.addEventListener('click', () => {
 navLinks.forEach(link => {
     link.addEventListener('click', (e) => {
         const href = link.getAttribute('href');
-        if (href.startsWith('#')) {
+        
+        // Only handle hash links (internal page navigation)
+        if (href.startsWith('#') && !href.includes('index.html')) {
             e.preventDefault();
             const targetId = href.substring(1);
             const targetSection = document.getElementById(targetId);
@@ -52,6 +54,7 @@ navLinks.forEach(link => {
             navLinks.forEach(l => l.classList.remove('active'));
             link.classList.add('active');
         }
+        // For external links (like katalog.html), let them work normally
     });
 });
 
