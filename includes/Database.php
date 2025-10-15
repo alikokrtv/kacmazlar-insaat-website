@@ -12,10 +12,11 @@ class Database {
     private $pdo;
     
     public function __construct() {
-        $this->host = 'localhost';
-        $this->dbname = 'kacmazlar_cms';
-        $this->username = 'root'; // Hosting'de değiştirilecek
-        $this->password = ''; // Hosting'de değiştirilecek
+        // Railway environment variables
+        $this->host = $_ENV['DB_HOST'] ?? $_SERVER['DB_HOST'] ?? 'localhost';
+        $this->dbname = $_ENV['DB_NAME'] ?? $_SERVER['DB_NAME'] ?? 'kacmazlar_cms';
+        $this->username = $_ENV['DB_USER'] ?? $_SERVER['DB_USER'] ?? 'root';
+        $this->password = $_ENV['DB_PASSWORD'] ?? $_SERVER['DB_PASSWORD'] ?? '';
         $this->charset = 'utf8mb4';
         
         $this->connect();
