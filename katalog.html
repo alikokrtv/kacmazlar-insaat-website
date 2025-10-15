@@ -444,8 +444,7 @@
                     </a></p>
                 </div>
             `;
-            return;
-        }
+        } else {
         
         // Configure PDF.js for better handling of large files
         const loadingTask = pdfjsLib.getDocument({
@@ -740,6 +739,7 @@
                 onNextPage();
             }
         });
+        } // PDF.js library check else block
     </script>
 </body>
 </html>
