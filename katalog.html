@@ -313,9 +313,13 @@
 
             <div id="pdf-canvas-wrapper">
                 <div class="loading-indicator">
-                    <i class="fas fa-spinner"></i>
+                    <i class="fas fa-spinner fa-spin"></i>
                     <h3>Katalog yükleniyor...</h3>
-                    <p>Lütfen bekleyin</p>
+                    <p>Lütfen bekleyin (143 MB dosya)</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="pdf-progress"></div>
+                    </div>
+                    <p id="loading-status">PDF dosyası hazırlanıyor...</p>
                 </div>
                 <canvas id="pdf-canvas"></canvas>
             </div>
@@ -407,8 +411,38 @@
         const ctx = canvas.getContext('2d');
         const wrapper = document.getElementById('pdf-canvas-wrapper');
 
-        // Set worker path
+        // Set worker path with fallback
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        
+        // Configure PDF.js for better handling of large files
+        const loadingTask = pdfjsLib.getDocument({
+            url: url,
+            cMapUrl: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/cmaps/',
+            cMapPacked: true,
+            disableAutoFetch: false,
+            disableStream: false,
+            disableRange: false,
+            maxImageSize: 1024 * 1024, // 1MB max image size
+            isEvalSupported: false,
+            useSystemFonts: true
+        });
+
+        // Progress tracking
+        loadingTask.onProgress = function(progress) {
+            if (progress.total > 0) {
+                const percent = Math.round((progress.loaded / progress.total) * 100);
+                const progressBar = document.getElementById('pdf-progress');
+                const loadingStatus = document.getElementById('loading-status');
+                
+                if (progressBar) {
+                    progressBar.style.width = percent + '%';
+                }
+                
+                if (loadingStatus) {
+                    loadingStatus.textContent = `Yükleniyor: ${percent}% (${Math.round(progress.loaded / 1024 / 1024)} MB / ${Math.round(progress.total / 1024 / 1024)} MB)`;
+                }
+            }
+        };
 
         // Render the page
         function renderPage(num) {
@@ -539,8 +573,8 @@
         document.getElementById('zoom-in').addEventListener('click', onZoomIn);
         document.getElementById('zoom-out').addEventListener('click', onZoomOut);
 
-        // Load PDF
-        pdfjsLib.getDocument(url).promise.then(function(pdfDoc_) {
+        // Load PDF with improved error handling
+        loadingTask.promise.then(function(pdfDoc_) {
             pdfDoc = pdfDoc_;
             document.getElementById('page-count').textContent = pdfDoc.numPages;
             document.getElementById('page-num').setAttribute('max', pdfDoc.numPages);
@@ -554,14 +588,39 @@
             updateButtons();
         }).catch(function(error) {
             console.error('PDF yükleme hatası:', error);
+            
+            // More detailed error handling
+            let errorMessage = 'Katalog dosyası yüklenirken bir hata oluştu.';
+            let errorDetails = '';
+            
+            if (error.name === 'MissingPDFException') {
+                errorMessage = 'PDF dosyası bulunamadı.';
+                errorDetails = 'Dosya yolu kontrol edilmeli veya dosya sunucuda mevcut olmalı.';
+            } else if (error.name === 'InvalidPDFException') {
+                errorMessage = 'PDF dosyası bozuk veya geçersiz.';
+                errorDetails = 'Dosya formatı kontrol edilmeli.';
+            } else if (error.name === 'UnexpectedResponseException') {
+                errorMessage = 'Sunucu beklenmeyen bir yanıt verdi.';
+                errorDetails = 'Sunucu bağlantısı kontrol edilmeli.';
+            } else if (error.message && error.message.includes('404')) {
+                errorMessage = 'PDF dosyası bulunamadı (404 hatası).';
+                errorDetails = 'Dosya yolu veya sunucu yapılandırması kontrol edilmeli.';
+            }
+            
             wrapper.innerHTML = `
                 <div class="loading-indicator">
-                    <i class="fas fa-exclamation-triangle" style="color: #e74c3c;"></i>
+                    <i class="fas fa-exclamation-triangle" style="color: #e74c3c; font-size: 48px; margin-bottom: 20px;"></i>
                     <h3>PDF yüklenemedi</h3>
-                    <p>Katalog dosyası yüklenirken bir hata oluştu.</p>
-                    <p><a href="images/katalog.pdf" download class="download-btn" style="display: inline-flex; margin-top: 20px;">
-                        <i class="fas fa-download"></i> PDF İndir
-                    </a></p>
+                    <p>${errorMessage}</p>
+                    <p style="font-size: 14px; color: #666; margin-top: 10px;">${errorDetails}</p>
+                    <div style="margin-top: 20px;">
+                        <a href="images/katalog.pdf" download="Kacmazlar-Insaat-Katalog.pdf" class="download-btn" style="display: inline-flex; margin-right: 10px;">
+                            <i class="fas fa-download"></i> PDF İndir
+                        </a>
+                        <button onclick="location.reload()" class="download-btn" style="display: inline-flex; background: #27ae60;">
+                            <i class="fas fa-refresh"></i> Tekrar Dene
+                        </button>
+                    </div>
                 </div>
             `;
         });
