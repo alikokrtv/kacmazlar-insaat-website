@@ -9,6 +9,10 @@ composer.lock
 # Configuration files (contains sensitive info)
 config.php
 
+# Large files
+*.pdf
+images/katalog.pdf
+
 # System files
 .DS_Store
 Thumbs.db
