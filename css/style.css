@@ -1129,6 +1129,8 @@ ul {
     box-shadow: var(--shadow);
     border-radius: 8px;
     display: none;
+    background: white;
+    margin: 0 auto;
 }
 
 .loading-indicator {

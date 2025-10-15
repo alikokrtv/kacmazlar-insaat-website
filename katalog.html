@@ -490,8 +490,13 @@
             
             pdfDoc.getPage(num).then(function(page) {
                 const viewport = page.getViewport({scale: scale});
+                
+                // Set canvas dimensions
                 canvas.height = viewport.height;
                 canvas.width = viewport.width;
+                
+                // Clear canvas
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
 
                 const renderContext = {
                     canvasContext: ctx,
@@ -502,11 +507,23 @@
 
                 renderTask.promise.then(function() {
                     pageRendering = false;
+                    console.log('Page rendered successfully:', num);
+                    
+                    // Ensure canvas is visible
+                    canvas.style.display = 'block';
+                    canvas.style.visibility = 'visible';
+                    
                     if (pageNumPending !== null) {
                         renderPage(pageNumPending);
                         pageNumPending = null;
                     }
+                }).catch(function(error) {
+                    console.error('Page render error:', error);
+                    pageRendering = false;
                 });
+            }).catch(function(error) {
+                console.error('Get page error:', error);
+                pageRendering = false;
             });
 
             // Update page counters
@@ -631,14 +648,20 @@
                 document.getElementById('page-count').textContent = pdfDoc.numPages;
                 document.getElementById('page-num').setAttribute('max', pdfDoc.numPages);
                 
+                console.log('Alternative loading method successful! Pages:', pdfDoc.numPages);
+                
                 // Hide loading indicator
                 wrapper.querySelector('.loading-indicator').style.display = 'none';
+                
+                // Show and prepare canvas
                 canvas.style.display = 'block';
+                canvas.style.visibility = 'visible';
+                canvas.style.maxWidth = '100%';
+                canvas.style.height = 'auto';
                 
                 // Render first page
                 renderPage(pageNum);
                 updateButtons();
-                console.log('Alternative loading method successful!');
             }).catch(function(error) {
                 console.error('Alternative loading also failed:', error);
                 throw error;
@@ -651,14 +674,20 @@
             document.getElementById('page-count').textContent = pdfDoc.numPages;
             document.getElementById('page-num').setAttribute('max', pdfDoc.numPages);
             
+            console.log('PDF loaded successfully! Pages:', pdfDoc.numPages);
+            
             // Hide loading indicator
             wrapper.querySelector('.loading-indicator').style.display = 'none';
+            
+            // Show and prepare canvas
             canvas.style.display = 'block';
+            canvas.style.visibility = 'visible';
+            canvas.style.maxWidth = '100%';
+            canvas.style.height = 'auto';
             
             // Render first page
             renderPage(pageNum);
             updateButtons();
-            console.log('PDF loaded successfully!');
         }).catch(function(error) {
             console.error('Primary PDF loading failed:', error);
             
