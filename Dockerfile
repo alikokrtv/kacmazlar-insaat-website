@@ -40,8 +40,8 @@ RUN mkdir -p /app/data && chmod 755 /app/data
 # Set permissions
 RUN chown -R www-data:www-data /app/data
 
-# Expose port (Railway uses $PORT environment variable)
-EXPOSE 8080
+# Expose port (Railway uses port 8086)
+EXPOSE 8086
 
 # Start PHP built-in server with proper port and error reporting
-CMD ["sh", "-c", "php -S 0.0.0.0:$PORT -t /app -d display_errors=1 -d log_errors=1"]
+CMD ["sh", "-c", "php -S 0.0.0.0:${PORT:-8086} -t /app -d display_errors=1 -d log_errors=1"]
