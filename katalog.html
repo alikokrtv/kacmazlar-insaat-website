@@ -328,7 +328,7 @@
         <div class="download-section">
             <h3><i class="fas fa-download"></i> Kataloğu İndirin</h3>
             <p>PDF kataloğumuzu bilgisayarınıza indirerek offline olarak inceleyebilirsiniz.</p>
-            <a href="images/katalog.pdf" download="Kacmazlar-Insaat-Katalog.pdf" class="download-btn">
+            <a href="./images/katalog.pdf" download="Kacmazlar-Insaat-Katalog.pdf" class="download-btn">
                 <i class="fas fa-file-pdf"></i>
                 PDF İndir (143 MB)
             </a>
@@ -399,7 +399,19 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script>
         // PDF.js initialization
-        const url = 'images/katalog.pdf';
+        const url = './images/katalog.pdf';
+        
+        // Debug: Test if file exists
+        fetch(url, { method: 'HEAD' })
+            .then(response => {
+                console.log('PDF file check:', response.status, response.statusText);
+                if (!response.ok) {
+                    console.error('PDF file not accessible:', response.status);
+                }
+            })
+            .catch(error => {
+                console.error('PDF file check failed:', error);
+            });
         
         let pdfDoc = null;
         let pageNum = 1;
@@ -414,6 +426,27 @@
         // Set worker path with fallback
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
         
+        // Debug: Log PDF.js version and configuration
+        console.log('PDF.js version:', pdfjsLib.version);
+        console.log('Worker source:', pdfjsLib.GlobalWorkerOptions.workerSrc);
+        console.log('PDF URL:', url);
+        
+        // Test if PDF.js is working
+        if (typeof pdfjsLib === 'undefined') {
+            console.error('PDF.js library not loaded!');
+            wrapper.innerHTML = `
+                <div class="loading-indicator">
+                    <i class="fas fa-exclamation-triangle" style="color: #e74c3c; font-size: 48px; margin-bottom: 20px;"></i>
+                    <h3>PDF.js Kütüphanesi Yüklenemedi</h3>
+                    <p>PDF görüntüleme kütüphanesi yüklenirken bir hata oluştu.</p>
+                    <p><a href="./images/katalog.pdf" download="Kacmazlar-Insaat-Katalog.pdf" class="download-btn" style="display: inline-flex; margin-top: 20px;">
+                        <i class="fas fa-download"></i> PDF İndir
+                    </a></p>
+                </div>
+            `;
+            return;
+        }
+        
         // Configure PDF.js for better handling of large files
         const loadingTask = pdfjsLib.getDocument({
             url: url,
@@ -424,7 +457,15 @@
             disableRange: false,
             maxImageSize: 1024 * 1024, // 1MB max image size
             isEvalSupported: false,
-            useSystemFonts: true
+            useSystemFonts: true,
+            verbosity: 0, // Reduce console output
+            stopAtErrors: false,
+            maxLength: 100 * 1024 * 1024, // 100MB max
+            rangeChunkSize: 65536, // 64KB chunks
+            httpHeaders: {
+                'Accept': 'application/pdf',
+                'Accept-Encoding': 'gzip, deflate'
+            }
         });
 
         // Progress tracking
@@ -573,7 +614,39 @@
         document.getElementById('zoom-in').addEventListener('click', onZoomIn);
         document.getElementById('zoom-out').addEventListener('click', onZoomOut);
 
-        // Load PDF with improved error handling
+        // Function to try alternative PDF loading methods
+        function tryAlternativeLoading() {
+            console.log('Trying alternative PDF loading method...');
+            
+            // Try with minimal configuration
+            const simpleLoadingTask = pdfjsLib.getDocument({
+                url: url,
+                verbosity: 0,
+                disableAutoFetch: true,
+                disableStream: true,
+                disableRange: true
+            });
+            
+            return simpleLoadingTask.promise.then(function(pdfDoc_) {
+                pdfDoc = pdfDoc_;
+                document.getElementById('page-count').textContent = pdfDoc.numPages;
+                document.getElementById('page-num').setAttribute('max', pdfDoc.numPages);
+                
+                // Hide loading indicator
+                wrapper.querySelector('.loading-indicator').style.display = 'none';
+                canvas.style.display = 'block';
+                
+                // Render first page
+                renderPage(pageNum);
+                updateButtons();
+                console.log('Alternative loading method successful!');
+            }).catch(function(error) {
+                console.error('Alternative loading also failed:', error);
+                throw error;
+            });
+        }
+
+        // Load PDF with improved error handling and fallback
         loadingTask.promise.then(function(pdfDoc_) {
             pdfDoc = pdfDoc_;
             document.getElementById('page-count').textContent = pdfDoc.numPages;
@@ -586,44 +659,78 @@
             // Render first page
             renderPage(pageNum);
             updateButtons();
+            console.log('PDF loaded successfully!');
         }).catch(function(error) {
-            console.error('PDF yükleme hatası:', error);
+            console.error('Primary PDF loading failed:', error);
             
-            // More detailed error handling
-            let errorMessage = 'Katalog dosyası yüklenirken bir hata oluştu.';
-            let errorDetails = '';
-            
-            if (error.name === 'MissingPDFException') {
-                errorMessage = 'PDF dosyası bulunamadı.';
-                errorDetails = 'Dosya yolu kontrol edilmeli veya dosya sunucuda mevcut olmalı.';
-            } else if (error.name === 'InvalidPDFException') {
-                errorMessage = 'PDF dosyası bozuk veya geçersiz.';
-                errorDetails = 'Dosya formatı kontrol edilmeli.';
-            } else if (error.name === 'UnexpectedResponseException') {
-                errorMessage = 'Sunucu beklenmeyen bir yanıt verdi.';
-                errorDetails = 'Sunucu bağlantısı kontrol edilmeli.';
-            } else if (error.message && error.message.includes('404')) {
-                errorMessage = 'PDF dosyası bulunamadı (404 hatası).';
-                errorDetails = 'Dosya yolu veya sunucu yapılandırması kontrol edilmeli.';
-            }
-            
-            wrapper.innerHTML = `
-                <div class="loading-indicator">
-                    <i class="fas fa-exclamation-triangle" style="color: #e74c3c; font-size: 48px; margin-bottom: 20px;"></i>
-                    <h3>PDF yüklenemedi</h3>
-                    <p>${errorMessage}</p>
-                    <p style="font-size: 14px; color: #666; margin-top: 10px;">${errorDetails}</p>
-                    <div style="margin-top: 20px;">
-                        <a href="images/katalog.pdf" download="Kacmazlar-Insaat-Katalog.pdf" class="download-btn" style="display: inline-flex; margin-right: 10px;">
-                            <i class="fas fa-download"></i> PDF İndir
-                        </a>
-                        <button onclick="location.reload()" class="download-btn" style="display: inline-flex; background: #27ae60;">
-                            <i class="fas fa-refresh"></i> Tekrar Dene
-                        </button>
+            // Try alternative loading method
+            tryAlternativeLoading().catch(function(altError) {
+                console.error('All PDF loading methods failed:', altError);
+                
+                // More detailed error handling
+                let errorMessage = 'Katalog dosyası yüklenirken bir hata oluştu.';
+                let errorDetails = '';
+                
+                if (error.name === 'MissingPDFException' || altError.name === 'MissingPDFException') {
+                    errorMessage = 'PDF dosyası bulunamadı.';
+                    errorDetails = 'Dosya yolu kontrol edilmeli veya dosya sunucuda mevcut olmalı.';
+                } else if (error.name === 'InvalidPDFException' || altError.name === 'InvalidPDFException') {
+                    errorMessage = 'PDF dosyası bozuk veya geçersiz.';
+                    errorDetails = 'Dosya formatı kontrol edilmeli.';
+                } else if (error.name === 'UnexpectedResponseException' || altError.name === 'UnexpectedResponseException') {
+                    errorMessage = 'Sunucu beklenmeyen bir yanıt verdi.';
+                    errorDetails = 'Sunucu bağlantısı kontrol edilmeli.';
+                } else if ((error.message && error.message.includes('404')) || (altError.message && altError.message.includes('404'))) {
+                    errorMessage = 'PDF dosyası bulunamadı (404 hatası).';
+                    errorDetails = 'Dosya yolu veya sunucu yapılandırması kontrol edilmeli.';
+                } else if (error.message && error.message.includes('CORS')) {
+                    errorMessage = 'CORS hatası oluştu.';
+                    errorDetails = 'Sunucu CORS ayarları kontrol edilmeli.';
+                }
+                
+                wrapper.innerHTML = `
+                    <div class="loading-indicator">
+                        <i class="fas fa-exclamation-triangle" style="color: #e74c3c; font-size: 48px; margin-bottom: 20px;"></i>
+                        <h3>PDF yüklenemedi</h3>
+                        <p>${errorMessage}</p>
+                        <p style="font-size: 14px; color: #666; margin-top: 10px;">${errorDetails}</p>
+                        <p style="font-size: 12px; color: #999; margin-top: 10px;">Hata detayı: ${error.message || altError.message}</p>
+                        <div style="margin-top: 20px;">
+                            <a href="./images/katalog.pdf" download="Kacmazlar-Insaat-Katalog.pdf" class="download-btn" style="display: inline-flex; margin-right: 10px;">
+                                <i class="fas fa-download"></i> PDF İndir
+                            </a>
+                            <button onclick="location.reload()" class="download-btn" style="display: inline-flex; background: #27ae60; margin-right: 10px;">
+                                <i class="fas fa-refresh"></i> Tekrar Dene
+                            </button>
+                            <button onclick="showIframeFallback()" class="download-btn" style="display: inline-flex; background: #3498db;">
+                                <i class="fas fa-eye"></i> Tarayıcıda Aç
+                            </button>
+                        </div>
                     </div>
+                `;
+            });
+        });
+
+        // Iframe fallback function
+        function showIframeFallback() {
+            wrapper.innerHTML = `
+                <div style="width: 100%; height: 600px; border: 1px solid #ddd; border-radius: 8px;">
+                    <iframe src="./images/katalog.pdf" 
+                            width="100%" 
+                            height="100%" 
+                            style="border: none; border-radius: 8px;"
+                            title="PDF Katalog">
+                        <p>Tarayıcınız PDF görüntülemeyi desteklemiyor. 
+                        <a href="./images/katalog.pdf" download="Kacmazlar-Insaat-Katalog.pdf">PDF'yi indirmek için tıklayın</a></p>
+                    </iframe>
+                </div>
+                <div style="margin-top: 15px; text-align: center;">
+                    <button onclick="location.reload()" class="download-btn" style="background: #27ae60;">
+                        <i class="fas fa-refresh"></i> PDF.js ile Tekrar Dene
+                    </button>
                 </div>
             `;
-        });
+        }
 
         // Keyboard navigation
         document.addEventListener('keydown', function(e) {
