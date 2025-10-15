@@ -491,12 +491,21 @@
             pdfDoc.getPage(num).then(function(page) {
                 const viewport = page.getViewport({scale: scale});
                 
-                // Set canvas dimensions
-                canvas.height = viewport.height;
-                canvas.width = viewport.width;
+                console.log('Rendering page', num, 'with scale', scale);
+                console.log('Viewport dimensions:', viewport.width, 'x', viewport.height);
+                
+                // Set canvas dimensions with device pixel ratio
+                const devicePixelRatio = window.devicePixelRatio || 1;
+                canvas.width = viewport.width * devicePixelRatio;
+                canvas.height = viewport.height * devicePixelRatio;
+                canvas.style.width = viewport.width + 'px';
+                canvas.style.height = viewport.height + 'px';
+                
+                // Scale the drawing context
+                ctx.scale(devicePixelRatio, devicePixelRatio);
                 
                 // Clear canvas
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.clearRect(0, 0, viewport.width, viewport.height);
 
                 const renderContext = {
                     canvasContext: ctx,
@@ -508,10 +517,13 @@
                 renderTask.promise.then(function() {
                     pageRendering = false;
                     console.log('Page rendered successfully:', num);
+                    console.log('Canvas dimensions after render:', canvas.width, 'x', canvas.height);
+                    console.log('Canvas style dimensions:', canvas.style.width, 'x', canvas.style.height);
                     
                     // Ensure canvas is visible
                     canvas.style.display = 'block';
                     canvas.style.visibility = 'visible';
+                    canvas.style.opacity = '1';
                     
                     if (pageNumPending !== null) {
                         renderPage(pageNumPending);
@@ -656,8 +668,11 @@
                 // Show and prepare canvas
                 canvas.style.display = 'block';
                 canvas.style.visibility = 'visible';
+                canvas.style.opacity = '1';
                 canvas.style.maxWidth = '100%';
                 canvas.style.height = 'auto';
+                canvas.style.position = 'relative';
+                canvas.style.zIndex = '10';
                 
                 // Render first page
                 renderPage(pageNum);
@@ -682,8 +697,11 @@
             // Show and prepare canvas
             canvas.style.display = 'block';
             canvas.style.visibility = 'visible';
+            canvas.style.opacity = '1';
             canvas.style.maxWidth = '100%';
             canvas.style.height = 'auto';
+            canvas.style.position = 'relative';
+            canvas.style.zIndex = '10';
             
             // Render first page
             renderPage(pageNum);

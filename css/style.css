@@ -1131,6 +1131,9 @@ ul {
     display: none;
     background: white;
     margin: 0 auto;
+    border: 1px solid #ddd;
+    position: relative;
+    z-index: 10;
 }
 
 .loading-indicator {
