@@ -46,10 +46,24 @@
             margin-bottom: 20px;
         }
 
-        .pdf-viewer {
-            width: 100%;
-            height: 80vh;
-            border: none;
+        .pdf-placeholder {
+            text-align: center;
+            padding: 60px 40px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 10px;
+            border: 2px dashed var(--primary-color);
+        }
+
+        .pdf-placeholder h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .pdf-placeholder p {
+            color: var(--gray);
+            margin-bottom: 10px;
+            line-height: 1.6;
         }
 
         .download-section {
@@ -142,13 +156,12 @@
         </div>
 
         <div class="pdf-container">
-            <iframe 
-                src="images/katalog.pdf#toolbar=1&navpanes=1&scrollbar=1" 
-                class="pdf-viewer"
-                title="Kacmazlar İnşaat Ürün Kataloğu">
-                <p>Tarayıcınız PDF görüntülemeyi desteklemiyor. 
-                <a href="images/katalog.pdf" download>Kataloğu indirmek için tıklayın</a></p>
-            </iframe>
+            <div class="pdf-placeholder">
+                <i class="fas fa-file-pdf" style="font-size: 4em; color: var(--primary-color); margin-bottom: 20px;"></i>
+                <h3>Ürün Kataloğumuz</h3>
+                <p>Çelik konstrüksiyon ve iskele sistemleri ürün kataloğumuzu bilgisayarınıza indirerek inceleyebilirsiniz.</p>
+                <p><strong>Dosya boyutu:</strong> 143MB | <strong>Sayfa sayısı:</strong> 21</p>
+            </div>
         </div>
 
         <div class="download-section">
