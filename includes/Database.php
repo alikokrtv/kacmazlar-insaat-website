@@ -1,7 +1,7 @@
 <?php
 /**
  * Database Connection Class
- * Railway SQLite Configuration
+ * Railway SQLite Configuration (No Volume)
  */
 
 class Database {
@@ -10,13 +10,13 @@ class Database {
     
     private function __construct() {
         try {
-            // Railway SQLite path
-            $dbPath = $_ENV['RAILWAY_VOLUME_MOUNT_PATH'] ?? '/app/data';
-            $dbFile = $dbPath . '/kacmazlar.db';
+            // SQLite database in app directory (no volume needed)
+            $dbFile = __DIR__ . '/../data/kacmazlar.db';
             
             // Ensure directory exists
-            if (!is_dir($dbPath)) {
-                mkdir($dbPath, 0755, true);
+            $dbDir = dirname($dbFile);
+            if (!is_dir($dbDir)) {
+                mkdir($dbDir, 0755, true);
             }
             
             $this->pdo = new PDO("sqlite:$dbFile");

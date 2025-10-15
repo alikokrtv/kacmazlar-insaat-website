@@ -1,4 +1,4 @@
-# Railway PHP 8.2 Dockerfile with SQLite support
+# Railway PHP 8.2 Dockerfile with SQLite support (No Volume)
 FROM php:8.2-fpm
 
 # Install system dependencies
@@ -34,7 +34,7 @@ RUN composer install --no-dev --optimize-autoloader
 # Copy application code
 COPY . .
 
-# Create data directory for SQLite
+# Create data directory for SQLite (no volume needed)
 RUN mkdir -p /app/data && chmod 755 /app/data
 
 # Set permissions

@@ -1,20 +1,20 @@
 <?php
 /**
- * Railway SQLite Database Setup Script
+ * Railway SQLite Database Setup Script (No Volume)
  * Bu script Railway'de ilk deployment'ta çalıştırılmalı
  */
 
 echo "Railway SQLite Database Setup Starting...\n";
 
 try {
-    // SQLite database path
-    $dbPath = $_ENV['RAILWAY_VOLUME_MOUNT_PATH'] ?? '/app/data';
-    $dbFile = $dbPath . '/kacmazlar.db';
+    // SQLite database path (no volume needed)
+    $dbFile = __DIR__ . '/data/kacmazlar.db';
+    $dbDir = dirname($dbFile);
     
     // Ensure directory exists
-    if (!is_dir($dbPath)) {
-        mkdir($dbPath, 0755, true);
-        echo "Created directory: $dbPath\n";
+    if (!is_dir($dbDir)) {
+        mkdir($dbDir, 0755, true);
+        echo "Created directory: $dbDir\n";
     }
     
     // Check if database already exists
