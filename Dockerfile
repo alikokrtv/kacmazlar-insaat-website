@@ -43,5 +43,5 @@ RUN chown -R www-data:www-data /app/data
 # Expose port (Railway uses $PORT environment variable)
 EXPOSE 8080
 
-# Start PHP built-in server with proper port
-CMD ["sh", "-c", "php -S 0.0.0.0:${PORT:-8080} -t /app"]
+# Start PHP built-in server with proper port and error reporting
+CMD ["sh", "-c", "php -S 0.0.0.0:${PORT:-8080} -t /app -d display_errors=1 -d log_errors=1"]
