@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Kacmazlar İnşaat Ürün Kataloğu - Çelik konstrüksiyon ve iskele sistemleri">
-    <title>Kacmazlar İnşaat - Ürün Kataloğu</title>
+    <title>Katalog - Kacmazlar İnşaat</title>
     <link rel="icon" type="image/png" href="images/favicon.png">
     <link rel="apple-touch-icon" href="images/favicon.png">
     <link rel="stylesheet" href="css/style.css">
@@ -17,7 +17,7 @@
         }
 
         .catalog-container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 20px;
         }
@@ -25,20 +25,25 @@
         .catalog-header {
             text-align: center;
             margin-bottom: 30px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 40px 20px;
+            border-radius: 10px;
+            box-shadow: var(--box-shadow);
         }
 
         .catalog-header h1 {
-            color: var(--primary-color);
             font-size: 2.5em;
             margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
         }
 
         .catalog-header p {
-            color: var(--gray);
-            font-size: 1.1em;
+            font-size: 1.2em;
+            opacity: 0.95;
         }
 
-        .pdf-container {
+        .pdf-viewer-container {
             background: white;
             border-radius: 10px;
             box-shadow: var(--box-shadow);
@@ -46,18 +51,127 @@
             margin-bottom: 20px;
         }
 
-        .pdf-viewer {
-            width: 100%;
-            height: 80vh;
+        .pdf-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            border-bottom: 2px solid var(--primary-color);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .pdf-controls-left,
+        .pdf-controls-center,
+        .pdf-controls-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .pdf-controls button {
+            background: var(--primary-color);
+            color: white;
             border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .pdf-controls button:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .pdf-controls button:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .page-info {
+            color: white;
+            font-weight: 600;
+            padding: 8px 15px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 5px;
+        }
+
+        .page-input {
+            width: 60px;
+            padding: 5px 10px;
+            border: 2px solid var(--primary-color);
+            border-radius: 5px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .zoom-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .zoom-select {
+            padding: 8px 12px;
+            border: 2px solid var(--primary-color);
+            border-radius: 5px;
+            background: white;
+            color: var(--dark);
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        #pdf-canvas-wrapper {
+            overflow: auto;
+            max-height: calc(100vh - 300px);
+            background: #ecf0f1;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        #pdf-canvas {
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            background: white;
+        }
+
+        .loading-indicator {
+            text-align: center;
+            padding: 100px 20px;
+            color: var(--gray);
+        }
+
+        .loading-indicator i {
+            font-size: 3em;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
         .download-section {
             text-align: center;
-            padding: 20px;
+            padding: 30px;
             background: white;
             border-radius: 10px;
             box-shadow: var(--box-shadow);
+        }
+
+        .download-section h3 {
+            color: var(--primary-color);
+            font-size: 1.8em;
+            margin-bottom: 15px;
         }
 
         .download-btn {
@@ -66,16 +180,19 @@
             gap: 10px;
             background: var(--primary-color);
             color: white;
-            padding: 15px 30px;
+            padding: 15px 40px;
             border-radius: 5px;
             text-decoration: none;
             font-weight: 600;
+            font-size: 1.1em;
             transition: var(--transition);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
 
         .download-btn:hover {
             background: var(--secondary-color);
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
         }
 
         .back-link {
@@ -87,6 +204,7 @@
             font-weight: 600;
             margin-bottom: 20px;
             transition: var(--transition);
+            font-size: 1.1em;
         }
 
         .back-link:hover {
@@ -95,11 +213,26 @@
 
         @media (max-width: 768px) {
             .catalog-header h1 {
-                font-size: 2em;
+                font-size: 1.8em;
             }
             
-            .pdf-viewer {
-                height: 60vh;
+            .catalog-header p {
+                font-size: 1em;
+            }
+
+            .pdf-controls {
+                justify-content: center;
+            }
+
+            .pdf-controls-left,
+            .pdf-controls-center,
+            .pdf-controls-right {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            #pdf-canvas-wrapper {
+                max-height: calc(100vh - 400px);
             }
         }
     </style>
@@ -137,26 +270,63 @@
         </a>
 
         <div class="catalog-header">
-            <h1>Katalog</h1>
-            <p>Çelik konstrüksiyon ve iskele sistemleri ürün kataloğumuzu inceleyin</p>
+            <h1><i class="fas fa-book"></i> Ürün Kataloğu</h1>
+            <p>Çelik konstrüksiyon ve iskele sistemleri ürün kataloğumuzu online görüntüleyin veya indirin</p>
         </div>
 
-        <div class="pdf-container">
-            <iframe 
-                src="images/katalog.pdf#toolbar=1&navpanes=1&scrollbar=1" 
-                class="pdf-viewer"
-                title="Kacmazlar İnşaat Ürün Kataloğu">
-                <p>Tarayıcınız PDF görüntülemeyi desteklemiyor. 
-                <a href="images/katalog.pdf" download>Kataloğu indirmek için tıklayın</a></p>
-            </iframe>
+        <div class="pdf-viewer-container">
+            <div class="pdf-controls">
+                <div class="pdf-controls-left">
+                    <button id="prev-page" title="Önceki Sayfa">
+                        <i class="fas fa-chevron-left"></i> Önceki
+                    </button>
+                    <button id="next-page" title="Sonraki Sayfa">
+                        Sonraki <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+                <div class="pdf-controls-center">
+                    <span class="page-info">
+                        Sayfa <input type="number" id="page-num" class="page-input" min="1" value="1"> / <span id="page-count">-</span>
+                    </span>
+                </div>
+                <div class="pdf-controls-right">
+                    <div class="zoom-controls">
+                        <button id="zoom-out" title="Uzaklaştır">
+                            <i class="fas fa-search-minus"></i>
+                        </button>
+                        <select id="zoom-select" class="zoom-select">
+                            <option value="0.5">50%</option>
+                            <option value="0.75">75%</option>
+                            <option value="1">100%</option>
+                            <option value="1.25">125%</option>
+                            <option value="1.5" selected>150%</option>
+                            <option value="2">200%</option>
+                            <option value="page-fit">Sayfaya Sığdır</option>
+                            <option value="page-width">Genişliğe Sığdır</option>
+                        </select>
+                        <button id="zoom-in" title="Yakınlaştır">
+                            <i class="fas fa-search-plus"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="pdf-canvas-wrapper">
+                <div class="loading-indicator">
+                    <i class="fas fa-spinner"></i>
+                    <h3>Katalog yükleniyor...</h3>
+                    <p>Lütfen bekleyin</p>
+                </div>
+                <canvas id="pdf-canvas"></canvas>
+            </div>
         </div>
 
         <div class="download-section">
-            <h3>Kataloğu İndirin</h3>
+            <h3><i class="fas fa-download"></i> Kataloğu İndirin</h3>
             <p>PDF kataloğumuzu bilgisayarınıza indirerek offline olarak inceleyebilirsiniz.</p>
-            <a href="images/katalog.pdf" download class="download-btn">
-                <i class="fas fa-download"></i>
-                PDF İndir
+            <a href="images/katalog.pdf" download="Kacmazlar-Insaat-Katalog.pdf" class="download-btn">
+                <i class="fas fa-file-pdf"></i>
+                PDF İndir (143 MB)
             </a>
         </div>
     </section>
@@ -167,7 +337,7 @@
             <div class="footer-content">
                 <div class="footer-column">
                     <h3>Kacmazlar İnşaat</h3>
-                    <p>Çelik konstrüksiyon, iskele ve kalıp sistemlerinde 25 yılı aşkın deneyimimizle güvenli ve kaliteli çözümler sunuyoruz.</p>
+                    <p>Çelik konstrüksiyon ve iskele sistemlerinde 25 yılı aşkın deneyimimizle güvenli ve kaliteli çözümler sunuyoruz.</p>
                     <div class="contact-details">
                         <p><i class="fas fa-phone"></i> <a href="tel:+905432392550">+90 543 239 25 50</a></p>
                         <p><i class="fas fa-envelope"></i> <a href="mailto:info@kacmazlarinsaat.com">info@kacmazlarinsaat.com</a></p>
@@ -194,10 +364,10 @@
                 <div class="footer-column">
                     <h3>Hizmetlerimiz</h3>
                     <ul>
-                        <li><a href="#hizmetler">İskele Sistemleri</a></li>
-                        <li><a href="#hizmetler">Çelik Konstrüksiyon</a></li>
-                        <li><a href="#hizmetler">Bakım & Onarım</a></li>
-                        <li><a href="#hizmetler">Endüstriyel Yapılar</a></li>
+                        <li><a href="index.html#hizmetler">İskele Sistemleri</a></li>
+                        <li><a href="index.html#hizmetler">Çelik Konstrüksiyon</a></li>
+                        <li><a href="index.html#hizmetler">Bakım & Onarım</a></li>
+                        <li><a href="index.html#hizmetler">Endüstriyel Yapılar</a></li>
                     </ul>
                 </div>
                 <div class="footer-column">
@@ -222,5 +392,188 @@
     </button>
 
     <script src="js/main.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+        // PDF.js initialization
+        const url = 'images/katalog.pdf';
+        
+        let pdfDoc = null;
+        let pageNum = 1;
+        let pageRendering = false;
+        let pageNumPending = null;
+        let scale = 1.5;
+
+        const canvas = document.getElementById('pdf-canvas');
+        const ctx = canvas.getContext('2d');
+        const wrapper = document.getElementById('pdf-canvas-wrapper');
+
+        // Set worker path
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+        // Render the page
+        function renderPage(num) {
+            pageRendering = true;
+            
+            pdfDoc.getPage(num).then(function(page) {
+                const viewport = page.getViewport({scale: scale});
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+
+                const renderContext = {
+                    canvasContext: ctx,
+                    viewport: viewport
+                };
+                
+                const renderTask = page.render(renderContext);
+
+                renderTask.promise.then(function() {
+                    pageRendering = false;
+                    if (pageNumPending !== null) {
+                        renderPage(pageNumPending);
+                        pageNumPending = null;
+                    }
+                });
+            });
+
+            // Update page counters
+            document.getElementById('page-num').value = num;
+        }
+
+        // Queue page rendering
+        function queueRenderPage(num) {
+            if (pageRendering) {
+                pageNumPending = num;
+            } else {
+                renderPage(num);
+            }
+        }
+
+        // Previous page
+        function onPrevPage() {
+            if (pageNum <= 1) {
+                return;
+            }
+            pageNum--;
+            queueRenderPage(pageNum);
+            updateButtons();
+        }
+
+        // Next page
+        function onNextPage() {
+            if (pageNum >= pdfDoc.numPages) {
+                return;
+            }
+            pageNum++;
+            queueRenderPage(pageNum);
+            updateButtons();
+        }
+
+        // Update button states
+        function updateButtons() {
+            document.getElementById('prev-page').disabled = (pageNum <= 1);
+            document.getElementById('next-page').disabled = (pageNum >= pdfDoc.numPages);
+        }
+
+        // Zoom in
+        function onZoomIn() {
+            scale += 0.25;
+            queueRenderPage(pageNum);
+            updateZoomSelect();
+        }
+
+        // Zoom out
+        function onZoomOut() {
+            if (scale <= 0.5) return;
+            scale -= 0.25;
+            queueRenderPage(pageNum);
+            updateZoomSelect();
+        }
+
+        // Update zoom select
+        function updateZoomSelect() {
+            const select = document.getElementById('zoom-select');
+            const existingOption = Array.from(select.options).find(opt => parseFloat(opt.value) === scale);
+            if (existingOption) {
+                select.value = scale;
+            }
+        }
+
+        // Zoom select change
+        document.getElementById('zoom-select').addEventListener('change', function(e) {
+            const value = e.target.value;
+            if (value === 'page-fit') {
+                // Fit to page height
+                pdfDoc.getPage(pageNum).then(function(page) {
+                    const viewport = page.getViewport({scale: 1});
+                    const wrapperHeight = wrapper.clientHeight - 40;
+                    scale = wrapperHeight / viewport.height;
+                    queueRenderPage(pageNum);
+                });
+            } else if (value === 'page-width') {
+                // Fit to page width
+                pdfDoc.getPage(pageNum).then(function(page) {
+                    const viewport = page.getViewport({scale: 1});
+                    const wrapperWidth = wrapper.clientWidth - 40;
+                    scale = wrapperWidth / viewport.width;
+                    queueRenderPage(pageNum);
+                });
+            } else {
+                scale = parseFloat(value);
+                queueRenderPage(pageNum);
+            }
+        });
+
+        // Page number input
+        document.getElementById('page-num').addEventListener('change', function(e) {
+            let num = parseInt(e.target.value);
+            if (num < 1) num = 1;
+            if (num > pdfDoc.numPages) num = pdfDoc.numPages;
+            pageNum = num;
+            queueRenderPage(pageNum);
+            updateButtons();
+        });
+
+        // Button event listeners
+        document.getElementById('prev-page').addEventListener('click', onPrevPage);
+        document.getElementById('next-page').addEventListener('click', onNextPage);
+        document.getElementById('zoom-in').addEventListener('click', onZoomIn);
+        document.getElementById('zoom-out').addEventListener('click', onZoomOut);
+
+        // Load PDF
+        pdfjsLib.getDocument(url).promise.then(function(pdfDoc_) {
+            pdfDoc = pdfDoc_;
+            document.getElementById('page-count').textContent = pdfDoc.numPages;
+            document.getElementById('page-num').setAttribute('max', pdfDoc.numPages);
+            
+            // Hide loading indicator
+            wrapper.querySelector('.loading-indicator').style.display = 'none';
+            canvas.style.display = 'block';
+            
+            // Render first page
+            renderPage(pageNum);
+            updateButtons();
+        }).catch(function(error) {
+            console.error('PDF yükleme hatası:', error);
+            wrapper.innerHTML = `
+                <div class="loading-indicator">
+                    <i class="fas fa-exclamation-triangle" style="color: #e74c3c;"></i>
+                    <h3>PDF yüklenemedi</h3>
+                    <p>Katalog dosyası yüklenirken bir hata oluştu.</p>
+                    <p><a href="images/katalog.pdf" download class="download-btn" style="display: inline-flex; margin-top: 20px;">
+                        <i class="fas fa-download"></i> PDF İndir
+                    </a></p>
+                </div>
+            `;
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') {
+                onPrevPage();
+            } else if (e.key === 'ArrowRight') {
+                onNextPage();
+            }
+        });
+    </script>
 </body>
 </html>
