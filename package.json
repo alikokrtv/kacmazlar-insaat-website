@@ -4,8 +4,8 @@
   "description": "Kacmazlar İnşaat - Profesyonel Web Sitesi",
   "main": "index.html",
   "scripts": {
-    "start": "npx serve -s . -p $PORT",
-    "dev": "npx serve -s . -p 3000"
+    "start": "npx serve . -p $PORT --no-clipboard",
+    "dev": "npx serve . -p 3000"
   },
   "dependencies": {
     "serve": "^14.2.1"

@@ -4,7 +4,7 @@
     "builder": "NIXPACKS"
   },
   "deploy": {
-    "startCommand": "npx serve . -p $PORT --no-clipboard",
+    "startCommand": "npx serve . -p $PORT --no-clipboard --cleanUrls",
     "healthcheckPath": "/",
     "healthcheckTimeout": 300,
     "restartPolicyType": "ON_FAILURE",
